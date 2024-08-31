@@ -52,7 +52,13 @@ public class ClienteServiceImp implements ClienteService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public void delete(Long id){clienteRepository.deleteById(id);}
+    public void delete(Long id) {
+        if (!clienteRepository.existsById(id)) {
+            throw new RuntimeException("Cliente not found");
+        }
+        clienteRepository.deleteById(id);
+    }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -61,4 +67,5 @@ public class ClienteServiceImp implements ClienteService {
         return clienteRepository.findByCustomerNameContainingIgnoreCase(nombre)
             .orElseThrow(() -> new RuntimeException("Cliente not found"));
     }
+
 }
